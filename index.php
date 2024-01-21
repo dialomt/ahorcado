@@ -45,6 +45,14 @@ function reiniciarJuego() {
     iniciarJuego();
 }
 
+// Procesa el reinicio si se envía por POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reset'])) {
+    reiniciarJuego();
+    // Redirige para evitar reenvío del formulario al recargar la página
+    header("Location: {$_SERVER['PHP_SELF']}");
+    exit;
+}
+
 // Inicia el juego si no hay una palabra secreta en la sesión
 if (!isset($_SESSION['palabraSecreta'])) {
     iniciarJuego();
@@ -54,7 +62,6 @@ if (!isset($_SESSION['palabraSecreta'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['letra'])) {
     $resultado = adivinarLetra($_POST['letra']);
 }
-
 ?>
 
 <!DOCTYPE html>
