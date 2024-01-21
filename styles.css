@@ -1,0 +1,59 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 50px;
+}
+
+h1 {
+    color: #333;
+}
+
+.mensaje {
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.ganador {
+    background-color: #5cb85c;
+    color: #fff;
+}
+
+.perdedor {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+input {
+    font-size: 16px;
+    padding: 5px;
+}
+
+button {
+    font-size: 16px;
+    padding: 5px 10px;
+    background-color: #337ab7;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #286090;
+}
