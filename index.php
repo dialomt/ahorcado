@@ -1,66 +1,62 @@
 <?php
 session_start();
 
-function startGame() {
-    include 'words.php'; // Include the file with words
-    $secretWord = $words[array_rand($words)];
-    $_SESSION['secretWord'] = strtoupper($secretWord);
-    $_SESSION['discoveredLetters'] = str_repeat('_', strlen($secretWord));
-    $_SESSION['remainingAttempts'] = 6;
+function initiateGame() {
+    include 'wordList.php';
+    $mysteryWord = $wordList[array_rand($wordList)];
+    $_SESSION['mysteryWord'] = strtoupper($mysteryWord);
+    $_SESSION['revealedLetters'] = str_repeat('_', strlen($mysteryWord));
+    $_SESSION['remainingTries'] = 6;
 }
 
-function guessLetter($letter) {
-    $secretWord = $_SESSION['secretWord'];
-    $discoveredLetters = $_SESSION['discoveredLetters'];
+function attemptLetter($letter) {
+    $mysteryWord = $_SESSION['mysteryWord'];
+    $revealedLetters = $_SESSION['revealedLetters'];
 
     $letter = strtoupper($letter);
 
-    if (strpos($secretWord, $letter) !== false) {
-        for ($i = 0; $i < strlen($secretWord); $i++) {
-            if ($secretWord[$i] == $letter) {
-                $discoveredLetters[$i] = $letter;
+    if (strpos($mysteryWord, $letter) !== false) {
+        for ($i = 0; $i < strlen($mysteryWord); $i++) {
+            if ($mysteryWord[$i] == $letter) {
+                $revealedLetters[$i] = $letter;
             }
         }
     } else {
-        $_SESSION['remainingAttempts']--;
+        $_SESSION['remainingTries']--;
     }
 
-    $_SESSION['discoveredLetters'] = $discoveredLetters;
+    $_SESSION['revealedLetters'] = $revealedLetters;
 
-    if (winGame()) {
+    if (victoryAchieved()) {
         return "win";
-    } elseif ($_SESSION['remainingAttempts'] <= 0) {
+    } elseif ($_SESSION['remainingTries'] <= 0) {
         return "lose";
     }
 
     return "continue";
 }
 
-function winGame() {
-    return $_SESSION['discoveredLetters'] == $_SESSION['secretWord'];
+function victoryAchieved() {
+    return $_SESSION['revealedLetters'] == $_SESSION['mysteryWord'];
 }
 
-function restartGame() {
+function resetGame() {
     session_unset();
-    startGame();
+    initiateGame();
 }
 
-// Process restart if sent via POST
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['reset'])) {
-    restartGame();
-    // Redirect to avoid form resubmission when reloading the page
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['restart'])) {
+    resetGame();
     header("Location: {$_SERVER['PHP_SELF']}");
     exit;
 }
 
-// Start the game if there is no secret word in the session
-if (!isset($_SESSION['secretWord'])) {
-    startGame();
+if (!isset($_SESSION['mysteryWord'])) {
+    initiateGame();
 }
 
-// Process the letter if sent via POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['letter'])) {
-    $result = guessLetter($_POST['letter']);
+    $gameStatus = attemptLetter($_POST['letter']);
 }
 ?>
 
@@ -69,40 +65,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['letter'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hangman Game</title>
+    <title>Hangman Challenge</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <h1>Hangman Game</h1>
+    <h1>Hangman Challenge</h1>
 
     <?php
-    if (isset($result)) {
-        if ($result == "win") {
-            echo "<p class='message winner'>Congratulations, you won!</p>";
-        } elseif ($result == "lose") {
-            echo "<p class='message loser'>Oh no, you lost! The word was: {$_SESSION['secretWord']}</p>";
+    if (isset($gameStatus)) {
+        if ($gameStatus == "win") {
+            echo "<p class='gameMessage victoryMessage'>Huzzah! You've bested the hangman!</p>";
+        } elseif ($gameStatus == "lose") {
+            echo "<p class='gameMessage defeatMessage'>Alas! The hangman claims another. The word was: {$_SESSION['mysteryWord']}</p>";
         }
     }
     ?>
 
-    <p>Word: <?php echo implode(' ', str_split($_SESSION['discoveredLetters'])); ?></p>
-    <p>Remaining attempts: <?php echo $_SESSION['remainingAttempts']; ?></p>
+    <p>Word: <?php echo implode(' ', str_split($_SESSION['revealedLetters'])); ?></p>
+    <p>Remaining attempts: <?php echo $_SESSION['remainingTries']; ?></p>
 
     <?php
-    if (!winGame() && $_SESSION['remainingAttempts'] > 0) {
+    if (!victoryAchieved() && $_SESSION['remainingTries'] > 0) {
         echo "<form action='' method='post'>";
-        echo "<label for='letter'>Letter, go! </label>";
-        echo "<input type='text' name='letter' maxlength='1' pattern='[A-Za-z]' required>";
-        echo "<button type='submit'>Unleash Guess! </button>";
+        echo "<label for='letter' class='guessPrompt'>Release your letter into the wild:</label>";
+        echo "<input type='text' name='letter' class='guessBox' maxlength='1' pattern='[A-Za-z]' required>";
+        echo "<button type='submit' class='guessButton'>Unleash Guess!</button>";
         echo "</form>";
     }
     ?>
 
     <?php
-    if (winGame() || $_SESSION['remainingAttempts'] <= 0) {
+    if (victoryAchieved() || $_SESSION['remainingTries'] <= 0) {
         echo "<form action='' method='post'>";
-        echo "<button type='submit' name='reset'>Restart Game</button>";
+        echo "<button type='submit' name='restart'>Restart Challenge</button>";
         echo "</form>";
     }
     ?>
