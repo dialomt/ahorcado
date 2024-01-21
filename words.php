@@ -1,3 +1,3 @@
 <?php
-$palabras = ["programacion", "javascript", "php", "html", "css", "python"];
+$words = ["class", "computer", "learn", "food", "mouse"];
 ?>
