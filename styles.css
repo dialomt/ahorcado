@@ -1,14 +1,13 @@
 
 
 body {
-    
-    font-family: 'Courier New', monospace;
+    font-family: 'Chango', cursive;
     text-align: center;
     margin: 0;
     padding: 0;
     height: 100vh;
     display: flex;
-    align-items: flex;
+    align-items: center;
     justify-content: center;
     flex-direction: column;
     transition: background-color 0.3s ease;
@@ -19,49 +18,37 @@ h1 {
     color: #0767a7;
     font-size: 4.5em;
     margin-bottom: 90px;
-    margin-top: 5%;
-    
-    
 }
 
-.message {
+.gameMessage {
     font-size: 18px;
     padding: 15px;
     border-radius: 8px;
     margin: 20px 0;
     font-weight: bold;
-    
 }
 
-.winner {
-    background-color: #564caf;
+.victoryMessage {
+    background-color: #4caf50;
     color: #fff;
 }
 
-.loser {
+.defeatMessage {
     background-color: #f44336;
     color: #fff;
 }
-
 
 form {
     margin-top: 20px;
 }
 
-label {
+.guessPrompt {
     font-size: 20px;
     font-weight: bold;
-    margin-right: 10px;
-    color: #000000;
+    color: #333;
 }
 
-p {
-    font-size: 24px; 
-    font-weight: bold; 
-    color: #1e1e01;
-}
-
-input {
+.guessBox {
     font-size: 20px;
     font-weight: bold;
     padding: 10px;
